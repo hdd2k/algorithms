@@ -41,16 +41,20 @@ def expected(AB, probs):
   # press delete(s)
   # Find expected value for each DELETE key num times pressed (1..prev_len)
   deletes = 0
+  print("prev_len : " + str( prev_len ))
+
+  print('$$$$$$$$$$$$')
   for d in range(1,prev_len+1):
-    print('$$$$$$$$$$$$')
-    print(prev_len)
-    print(d)
+    print("d : " + str( d ))
     # For each DELETE key num, find prob of earliest wrong being contained
     # prob contained = first portion ALL correct
     prob_contained = reduce(lambda acc, p : acc*float(p), probs[:(prev_len-d)], 1)
-    # expected = (prob earliest wrong contained * (correct the 1st time) ) + ((1-prob earliest wrong) * (2nd time correct))
-    deletes += ((prob_contained)*(d+d+(pw_len-prev_len)+1) + (1-prob_contained)*(d+d+(pw_len-prev_len)+1 + pw_len+1))
-    print(deletes)
+    print("prob of containment for d : " + str(d) + " ---> " + str(prob_contained))
+    # expected = (prob earliest wrong contained * sum(keystrokes if correct the 1st time FOR ALL 2nd portion PERMUTATIONS))
+    deletes += ((prob_contained)*(d+d+(pw_len-prev_len)+1)*(pow(2,(pw_len-prev_len))))
+    # + ((1-prob earliest wrong) * (keystrokes if 2nd time correct FOR ALL 2nd portion permutations))
+    deletes += ((1-prob_contained)*(d+d+(pw_len-prev_len)+1 + pw_len+1)*(pow(2,(pw_len-prev_len))))
+    print("deletes : " + str( deletes ))
   print("#######")
   deletes /= prev_len
   print(deletes)
